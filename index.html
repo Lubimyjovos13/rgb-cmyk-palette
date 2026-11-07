@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Интерактивная палитра RGB и CMYK: ползунки интенсивности каналов и наглядная схема смешения цветов.">
+    <title>RGB и CMYK — интерактивная палитра</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="main-title">Цветовые модели</h1>
+            <p class="subtitle">Двигайте ползунки и смотрите, как складывается цвет</p>
+        </header>
+
+        <!-- Вкладки -->
+        <div class="tabs" role="tablist" aria-label="Цветовая модель">
+            <button class="tab active" data-tab="rgb" id="tab-rgb" role="tab"
+                    aria-selected="true" aria-controls="rgb-panel">
+                <span class="tab-icon" aria-hidden="true">💡</span> RGB
+                <span class="tab-badge">Аддитивная</span>
+            </button>
+            <button class="tab" data-tab="cmyk" id="tab-cmyk" role="tab"
+                    aria-selected="false" aria-controls="cmyk-panel">
+                <span class="tab-icon" aria-hidden="true">🖨️</span> CMYK
+                <span class="tab-badge">Субтрактивная</span>
+            </button>
+        </div>
+
+        <!-- ================= RGB ================= -->
+        <section class="panel active" id="rgb-panel" role="tabpanel" aria-labelledby="tab-rgb">
+            <div class="panel-header">
+                <h2>RGB — аддитивная модель</h2>
+                <p class="panel-desc">Так светят экраны мониторов и телефонов. Каналы <strong>складываются</strong>:
+                    красный + зелёный + синий свет вместе дают белый.</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="sliders-section">
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#ff4d4d">R</span>
+                            <span class="channel-full">Red · красный</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" style="background:linear-gradient(to right,#000,#f00)">
+                                <input type="range" min="0" max="255" value="230" step="1"
+                                       class="slider" id="r-slider" aria-label="Красный канал, от 0 до 255">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="255" value="230" step="1"
+                                       class="value-input" id="r-value" aria-label="Красный канал, число">
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="r-bar" style="background:#ff4d4d"></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#4ade80">G</span>
+                            <span class="channel-full">Green · зелёный</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" style="background:linear-gradient(to right,#000,#0f0)">
+                                <input type="range" min="0" max="255" value="255" step="1"
+                                       class="slider" id="g-slider" aria-label="Зелёный канал, от 0 до 255">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="255" value="255" step="1"
+                                       class="value-input" id="g-value" aria-label="Зелёный канал, число">
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="g-bar" style="background:#4ade80"></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#5b8cff">B</span>
+                            <span class="channel-full">Blue · синий</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" style="background:linear-gradient(to right,#000,#00f)">
+                                <input type="range" min="0" max="255" value="255" step="1"
+                                       class="slider" id="b-slider" aria-label="Синий канал, от 0 до 255">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="255" value="255" step="1"
+                                       class="value-input" id="b-value" aria-label="Синий канал, число">
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="b-bar" style="background:#5b8cff"></div>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="color-preview-card">
+                        <div class="color-preview">
+                            <div class="color-preview-inner" id="rgb-preview" role="img" aria-label="Полученный цвет"></div>
+                        </div>
+                        <div class="color-info">
+                            <div class="color-code" id="rgb-hex">#E6FFFF</div>
+                            <div class="color-code-secondary" id="rgb-code">rgb(230, 255, 255)</div>
+                            <div class="cross-model" id="rgb-cross">= cmyk(10%, 0%, 0%, 0%)</div>
+                        </div>
+                    </div>
+
+                    <div class="venn-container">
+                        <h3>Смешение света</h3>
+                        <canvas id="rgb-venn" width="280" height="250" role="img"
+                                aria-label="Схема сложения красного, зелёного и синего света"></canvas>
+                        <p class="venn-hint">Пересечение кругов показывает цвет на выходе</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="presets">
+                <h3>Быстрые примеры</h3>
+                <div class="preset-buttons" id="rgb-presets">
+                    <button class="preset-btn" data-r="255" data-g="0" data-b="0" style="background:#ff0000">Красный</button>
+                    <button class="preset-btn" data-r="0" data-g="255" data-b="0" style="background:#00c000">Зелёный</button>
+                    <button class="preset-btn" data-r="0" data-g="0" data-b="255" style="background:#0000ff">Синий</button>
+                    <button class="preset-btn" data-r="255" data-g="255" data-b="0" style="background:#ffdd00;color:#111">Жёлтый</button>
+                    <button class="preset-btn" data-r="0" data-g="255" data-b="255" style="background:#00d8d8;color:#111">Голубой</button>
+                    <button class="preset-btn" data-r="255" data-g="0" data-b="255" style="background:#ff00ff">Пурпурный</button>
+                    <button class="preset-btn" data-r="255" data-g="255" data-b="255" style="background:#ffffff;color:#111">Белый</button>
+                    <button class="preset-btn" data-r="0" data-g="0" data-b="0" style="background:#000000">Чёрный</button>
+                    <button class="preset-btn" data-r="255" data-g="165" data-b="0" style="background:#ffa500;color:#111">Оранжевый</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CMYK ================= -->
+        <section class="panel" id="cmyk-panel" role="tabpanel" aria-labelledby="tab-cmyk" hidden>
+            <div class="panel-header">
+                <h2>CMYK — субтрактивная модель</h2>
+                <p class="panel-desc">Так печатают принтеры и типографии. Краски <strong>вычитают</strong> свет из белой
+                    бумаги: чем больше краски, тем темнее участок.</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="sliders-section">
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#00b0e6">C</span>
+                            <span class="channel-full">Cyan · голубой</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" id="c-track" style="background:linear-gradient(to right,#fff,#00aeef)">
+                                <input type="range" min="0" max="100" value="0" step="1"
+                                       class="slider" id="c-slider" aria-label="Голубая краска, от 0 до 100 процентов">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="100" value="0" step="1"
+                                       class="value-input" id="c-value" aria-label="Голубая краска, число">
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="c-bar" style="background:#00b0e6"></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#ff4fa3">M</span>
+                            <span class="channel-full">Magenta · пурпурный</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" id="m-track" style="background:linear-gradient(to right,#fff,#ec008c)">
+                                <input type="range" min="0" max="100" value="0" step="1"
+                                       class="slider" id="m-slider" aria-label="Пурпурная краска, от 0 до 100 процентов">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="100" value="0" step="1"
+                                       class="value-input" id="m-value" aria-label="Пурпурная краска, число">
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="m-bar" style="background:#ff4fa3"></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#f5d90a">Y</span>
+                            <span class="channel-full">Yellow · жёлтый</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" id="y-track" style="background:linear-gradient(to right,#fff,#fff200)">
+                                <input type="range" min="0" max="100" value="0" step="1"
+                                       class="slider" id="y-slider" aria-label="Жёлтая краска, от 0 до 100 процентов">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="100" value="0" step="1"
+                                       class="value-input" id="y-value" aria-label="Жёлтая краска, число">
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="y-bar" style="background:#f5d90a"></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span class="channel-name" style="color:#b9c0dd">K</span>
+                            <span class="channel-full">Key · чёрный</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <div class="slider-track" id="k-track" style="background:linear-gradient(to right,#fff,#1a1a1a)">
+                                <input type="range" min="0" max="100" value="0" step="1"
+                                       class="slider" id="k-slider" aria-label="Чёрная краска, от 0 до 100 процентов">
+                            </div>
+                            <div class="value-box">
+                                <input type="number" min="0" max="100" value="0" step="1"
+                                       class="value-input" id="k-value" aria-label="Чёрная краска, число">
+                                <span class="unit">%</span>
+                            </div>
+                        </div>
+                        <div class="slider-bar" id="k-bar" style="background:#b9c0dd"></div>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <div class="color-preview-card">
+                        <div class="color-preview">
+                            <div class="color-preview-inner" id="cmyk-preview" role="img" aria-label="Полученный цвет"></div>
+                        </div>
+                        <div class="color-info">
+                            <div class="color-code" id="cmyk-hex">#FFFFFF</div>
+                            <div class="color-code-secondary" id="cmyk-code">cmyk(0%, 0%, 0%, 0%)</div>
+                            <div class="cross-model" id="cmyk-cross">= rgb(255, 255, 255)</div>
+                        </div>
+                    </div>
+
+                    <div class="venn-container">
+                        <h3>Смешение красок</h3>
+                        <canvas id="cmyk-venn" width="280" height="250" role="img"
+                                aria-label="Схема вычитания света голубой, пурпурной и жёлтой красками"></canvas>
+                        <p class="venn-hint">Пересечение кругов показывает цвет на выходе</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="presets">
+                <h3>Быстрые примеры</h3>
+                <div class="preset-buttons" id="cmyk-presets">
+                    <button class="preset-btn" data-c="100" data-m="0" data-y="0" data-k="0" style="background:#00ffff;color:#111">Голубой</button>
+                    <button class="preset-btn" data-c="0" data-m="100" data-y="0" data-k="0" style="background:#ff00ff">Пурпурный</button>
+                    <button class="preset-btn" data-c="0" data-m="0" data-y="100" data-k="0" style="background:#ffff00;color:#111">Жёлтый</button>
+                    <button class="preset-btn" data-c="100" data-m="100" data-y="0" data-k="0" style="background:#0000ff">Синий</button>
+                    <button class="preset-btn" data-c="100" data-m="0" data-y="100" data-k="0" style="background:#00ff00;color:#111">Зелёный</button>
+                    <button class="preset-btn" data-c="0" data-m="100" data-y="100" data-k="0" style="background:#ff0000">Красный</button>
+                    <button class="preset-btn" data-c="0" data-m="0" data-y="0" data-k="100" style="background:#000000">Чёрный</button>
+                    <button class="preset-btn" data-c="0" data-m="0" data-y="0" data-k="0" style="background:#ffffff;color:#111">Белый</button>
+                    <button class="preset-btn" data-c="0" data-m="50" data-y="100" data-k="0" style="background:#ff8000;color:#111">Оранжевый</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="info-section">
+            <div class="info-card">
+                <h3>💡 RGB: свет складывается</h3>
+                <ul>
+                    <li>Все каналы на максимуме → <strong>белый</strong></li>
+                    <li>Все каналы на нуле → <strong>чёрный</strong></li>
+                    <li>Значения каналов: 0–255</li>
+                    <li>Где применяется: мониторы, телефоны, проекторы</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>🖨️ CMYK: краска вычитает свет</h3>
+                <ul>
+                    <li>Все краски на нуле → <strong>белая бумага</strong></li>
+                    <li>Все краски на максимуме → <strong>чёрный</strong></li>
+                    <li>Значения каналов: 0–100 %</li>
+                    <li>Где применяется: принтеры, типографии, журналы</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>Подсказка: клавиши <kbd>1</kbd> и <kbd>2</kbd> переключают вкладки</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
